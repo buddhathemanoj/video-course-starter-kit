@@ -1,4 +1,3 @@
-import Footer from './Footer'
 import Nav from './Nav'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -8,7 +7,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <main className='mx-auto max-w-full md:max-w-6xl min-h-screen px-5'>
         {children}
       </main>
-      <Footer />
+     
     </>
   )
 }

@@ -13,6 +13,7 @@ export default async function assetHandler(req: NextApiRequest, res: NextApiResp
     case 'GET':
       try {
         const course: Course | null = await prisma.course.findUnique({ where: { id: parseInt(courseId) } })
+        console.log("course", course)
         res.status(200).json(course)
       } catch (e) {
         console.error('Request error', e)
@@ -20,7 +21,7 @@ export default async function assetHandler(req: NextApiRequest, res: NextApiResp
       }
       break
     case 'PUT':
-      const { name, description } = JSON.parse(req.body)
+      const { name, description  , published} = JSON.parse(req.body)
       const session = await getServerSession(req, res, authOptions)
       if (!session) res.status(401).end();
 
@@ -49,7 +50,8 @@ export default async function assetHandler(req: NextApiRequest, res: NextApiResp
           },
           data: {
             name: name,
-            description: description
+            description: description ,
+            published : published
           },
         })
 

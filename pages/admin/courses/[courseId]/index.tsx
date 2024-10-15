@@ -50,6 +50,7 @@ const AdminCourseEdit: NextPage<AdminCourseEditPageProps> = ({ course }) => {
 
   const onSubmit: SubmitHandler<Inputs> = async data => {
     mutation.mutate(data);
+    console.log('mutationdata', data)
   };
 
   if (session) {

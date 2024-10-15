@@ -23,7 +23,9 @@ type AdminIndexPageProps = {
 
 const AdminIndex: NextPage<AdminIndexPageProps> = ({ courses }) => {
   const { data: session } = useSession()
-
+console.log("data",session)
+const isAdmin = session?.user?.isAdmin
+console.log("isAdmin", isAdmin)
   if (session) {
     return (
       <>
@@ -31,7 +33,7 @@ const AdminIndex: NextPage<AdminIndexPageProps> = ({ courses }) => {
         <Heading as='h2'>Your courses</Heading>
 
         {courses.length > 0 ? (
-          <CourseGrid courses={courses} isAdmin />
+          <CourseGrid courses={courses} isAdmin={isAdmin} />
         ) : (
           <div>
             <Heading as='h3'>You don&apos;t have any courses yet.</Heading>

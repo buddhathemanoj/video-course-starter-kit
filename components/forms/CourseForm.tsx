@@ -8,7 +8,9 @@ import { Course } from "@prisma/client";
 export type Inputs = {
   name: string;
   description: string;
+  published: boolean;
 };
+
 
 type Props = {
   course?: Course;
@@ -17,19 +19,25 @@ type Props = {
 }
 
 const CourseForm = ({ course, onSubmit, isLoading }: Props) => {
-  const methods = useForm<Inputs>({ defaultValues: { name: course?.name, description: course?.description } });
-
+  const methods = useForm<Inputs>({
+    defaultValues: {
+      name: course?.name,
+      description: course?.description,
+      published: course?.published || false
+    }
+  });
+  
   return (
     <FormProvider {...methods}>
       <form className='flex flex-col max-w-lg' onSubmit={methods.handleSubmit(onSubmit)}>
         <TextInput label='Name' name='name' options={{ required: true }} />
         <TextAreaInput label='Description' name='description' options={{ required: true }} />
-        <Checkbox label='Publish' name='published' />
-        <p className="text-slate-500 text-sm mb-6">
+        <Checkbox label='Publish' name='published'  />
+        {/* <p className="text-slate-500 text-sm mb-6">
           <a href='https://github.com/muxinc/video-course-starter-kit' target='_blank' rel='noreferrer' className='underline'>Fork this repo</a>
           {" "}
           to publish your own courses
-        </p>
+        </p> */}
         <SubmitInput value={`${course ? 'Update' : 'Create'} course`} isLoading={isLoading} />
       </form>
     </FormProvider>

@@ -9,12 +9,13 @@ type Props = {
 }
 
 const Checkbox = ({ name, label, options = {} }: Props) => {
-  const { register, formState: { errors } } = useFormContext();
-
+  const { register, watch } = useFormContext();
+  const value = watch(name);
+console.log('value', value)
   return (
     <Field>
       <div className="flex items-center gap-2">
-        <input type="checkbox" className="border-gray-200 cursor-not-allowed mb-1 block" disabled {...register(name, options)} />
+        <input type="checkbox" checked={value} {...register(name, options)} className="border-gray-200 cursor-not-allowed mb-1 block"  />
         <Label htmlFor={name}>{label}</Label>
       </div>
     </Field>

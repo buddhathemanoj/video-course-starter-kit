@@ -14,6 +14,7 @@ type Props = {
 
 const CourseCard = ({ course, isAdmin }: Props) => {
   const href = isAdmin ? `/admin/courses/${course.id}` : `/courses/${course.id}`
+  console.log("course",course)
   return (
     <>
       <Link href={href} className='w-full border rounded-lg transition shadow-sm hover:shadow-md cursor-pointer'>

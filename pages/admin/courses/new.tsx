@@ -31,6 +31,7 @@ const AdminNewCourse: NextPage = () => {
   })
 
   const onSubmit: SubmitHandler<Inputs> = async data => {
+    console.log('Formdata', data)
     mutation.mutate(data);
   };
 
