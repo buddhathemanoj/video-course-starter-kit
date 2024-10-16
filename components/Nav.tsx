@@ -2,9 +2,27 @@ import Head from 'next/head'
 import Link from 'next/link'
 import Image from "next/image"
 import { useSession, signIn, signOut } from "next-auth/react"
+import { useEffect, useState } from 'react'
+import ProfileDropdown from './profile/profileHeader'
+import Button from './Button'
 
 const Nav = () => {
   const { data: session } = useSession()
+  const handleManageAccount = () => {
+    console.log("Managing account")
+  }
+  const handleAddAccount = () => {
+    console.log("Adding account")
+  }
+  const [isAdmin,setisAdmin] = useState(false)
+  useEffect(()=>{
+    if(session?.user.isAdmin){
+      setisAdmin(true)
+    }else{
+      setisAdmin(false)
+    }
+  },[session])
+  console.log("Admin session:",session)
 
   return (
     <>
@@ -15,22 +33,30 @@ const Nav = () => {
       </Head>
 
       <nav className='p-4 mb-6 flex items-center space-x-3'>
-        <ul className='flex gap-2'>
-          <li>
-            <Link href="/" className='underline'>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-              </svg>
-            </Link>
-          </li>
-          {session && (
-            <li>
-              <Link href="/admin" className='underline'>
-                Admin
-              </Link>
-            </li>
-          )}
-        </ul>
+      <ul className='flex gap-2'>
+  <li>
+    <Link href="/" className='underline'>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+      </svg>
+    </Link>
+  </li>
+  {session && isAdmin && (
+    <>
+      <li>
+        <Link href="/admin" className='underline'>
+          Admin
+        </Link>
+      </li>
+      <li>
+        <Link href="/admin/users" className='underline'>
+          Users
+        </Link>
+      </li>
+    </>
+  )}
+</ul>
+
         <div className='flex-1 flex justify-center'>
           <Link href="/" className="flex justify-center items-center">
               <Image
@@ -45,14 +71,17 @@ const Nav = () => {
           </Link>
         </div>
         <div className='text-right text-sm'>
-          {session ? (
-            <div className='text-slate-700'>
-              Signed in as {session.user?.email} <br />
-              <button className='underline' onClick={() => signOut()}>Sign out</button>
-            </div>
+          {session ? (     <ProfileDropdown
+             name={session.user.name || ""}
+             email={session.user.email || ""}
+             avatarUrl="/placeholder.svg?height=32&width=32"
+             onManageAccount={handleManageAccount}
+             onSignOut={signOut}
+             onAddAccount={handleAddAccount}
+           />
           ) : (
             <p>
-              <button onClick={() => signIn()}>Sign in with GitHub</button>
+              <Button onClick={() => signIn()}>Sign in</Button>
             </p>
           )}
         </div>
