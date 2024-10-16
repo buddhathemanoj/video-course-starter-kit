@@ -8,6 +8,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+<<<<<<< HEAD
+=======
+
+>>>>>>> b41781c3c4c747a4640a292b96320c2b6131622e
 type ProfileDropdownProps = {
   name?: string
   email?: string
@@ -16,6 +20,10 @@ type ProfileDropdownProps = {
   onSignOut: () => void
   onAddAccount: () => void
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> b41781c3c4c747a4640a292b96320c2b6131622e
 export default function ProfileDropdown({
   name = "",
   email = "",
@@ -25,6 +33,10 @@ export default function ProfileDropdown({
   onAddAccount
 }: ProfileDropdownProps) {
   const initials = name ? name.charAt(0).toUpperCase() : "?"
+<<<<<<< HEAD
+=======
+
+>>>>>>> b41781c3c4c747a4640a292b96320c2b6131622e
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
