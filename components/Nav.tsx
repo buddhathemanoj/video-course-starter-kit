@@ -2,9 +2,20 @@ import Head from 'next/head'
 import Link from 'next/link'
 import Image from "next/image"
 import { useSession, signIn, signOut } from "next-auth/react"
+import ProfileDropdown from './profile/profileHeader'
+import Button from './Button'
 
 const Nav = () => {
   const { data: session } = useSession()
+  const handleManageAccount = () => {
+    console.log("Managing account")
+  }
+
+
+
+  const handleAddAccount = () => {
+    console.log("Adding account")
+  }
 
   return (
     <>
@@ -23,7 +34,7 @@ const Nav = () => {
               </svg>
             </Link>
           </li>
-          {session && (
+          {session && session.user?.isAdmin && (
             <li>
               <Link href="/admin" className='underline'>
                 Admin
@@ -46,13 +57,21 @@ const Nav = () => {
         </div>
         <div className='text-right text-sm'>
           {session ? (
-            <div className='text-slate-700'>
-              Signed in as {session.user?.email} <br />
-              <button className='underline' onClick={() => signOut()}>Sign out</button>
-            </div>
+            // <div className='text-slate-700'>
+            //   Signed in as {session.user?.email} <br />
+            //   <button className='underline' onClick={() => signOut()}>Sign out</button>
+            // </div>
+             <ProfileDropdown
+             name={session.user.name || ""}
+             email={session.user.email || ""}
+             avatarUrl="/placeholder.svg?height=32&width=32"
+             onManageAccount={handleManageAccount}
+             onSignOut={signOut}
+             onAddAccount={handleAddAccount}
+           />
           ) : (
             <p>
-              <button onClick={() => signIn()}>Sign in with GitHub</button>
+              <Button onClick={() => signIn()}>Sign in</Button>
             </p>
           )}
         </div>
