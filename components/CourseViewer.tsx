@@ -19,80 +19,7 @@ type Props = {
   lessonProgress: number[];
   setLessonProgress: (lessonProgess: number[]) => void;
 };
-const initialPosts = [
-  {
-    id: 1,
-    content:
-      "What's the main difference between getServerSideProps and getStaticProps in Next.js?",
-    author: "CuriousLearner",
-    upvotes: 15,
-    downvotes: 2,
-    isQuestion: true,
-    answers: [
-      {
-        id: 2,
-        content:
-          "The main difference is when the data fetching occurs. getServerSideProps runs on every request, allowing for real-time data, while getStaticProps runs at build time, generating static pages.",
-        author: "NextExpert",
-        upvotes: 22,
-        downvotes: 1,
-        isQuestion: false,
-        answers: [],
-      },
-      {
-        id: 3,
-        content:
-          "To add to that, getServerSideProps is useful for pages that need frequently updated data or user-specific content. getStaticProps is great for pages where the content doesn't change often, as it provides better performance.",
-        author: "PerformanceGuru",
-        upvotes: 18,
-        downvotes: 0,
-        isQuestion: false,
-        answers: [],
-      },
-    ],
-  },
-  {
-    id: 4,
-    content: "How does Next.js handle SSR for pages with dynamic routes?",
-    author: "RouteExplorer",
-    upvotes: 10,
-    downvotes: 1,
-    isQuestion: true,
-    answers: [
-      {
-        id: 5,
-        content:
-          "For dynamic routes, you can use getServerSideProps with the context parameter. This gives you access to the dynamic parts of the URL, allowing you to fetch data based on the route parameters.",
-        author: "DynamicDev",
-        upvotes: 13,
-        downvotes: 2,
-        isQuestion: false,
-        answers: [],
-      },
-    ],
-  },
-  {
-    id: 6,
-    content:
-      "Are there any performance considerations when using SSR in Next.js?",
-    author: "PerformanceSeeker",
-    upvotes: 8,
-    downvotes: 0,
-    isQuestion: true,
-    answers: [
-      {
-        id: 7,
-        content:
-          "Yes, there are a few things to consider. SSR can increase the time to first byte (TTFB) as the server needs to generate the HTML. To optimize, you can use caching strategies, minimize database queries, and consider using Incremental Static Regeneration (ISR) for a balance between static and dynamic content.",
-        author: "OptimizationPro",
-        upvotes: 16,
-        downvotes: 1,
-        isQuestion: false,
-        answers: [],
-      },
-    ],
-  },
-];
+
 const CourseViewer = ({
   course,
   lessonProgress = [],
@@ -101,7 +28,10 @@ const CourseViewer = ({
   const router = useRouter();
   const slug = (router.query.slug as string[]) || [];
   const lessonIndex = slug[2] ? parseInt(slug[2]) - 1 : 0;
-
+console.log("lessonIndex", lessonIndex)
+const lessonId = course.lessons[lessonIndex].id;
+const lessonIdstring = lessonId.toString();
+console.log("lessonId", lessonId)
   const [activeLesson, setActiveLesson] = useState(course.lessons[lessonIndex]);
   const playbackId = activeLesson?.video?.publicPlaybackId;
   const videoReady = activeLesson?.video?.status === "ready";
@@ -165,7 +95,7 @@ const CourseViewer = ({
         <p className="text-slate-600 text-lg mb-2">{activeLesson.description}</p>
         <hr/>
         <LessonForum
-              lessonId="1"
+              lessonId={lessonIdstring}
              
             />
       </div>
