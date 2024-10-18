@@ -333,7 +333,7 @@ export default function LessonForum({ lessonId }: LessonForumProps) {
     if (answerContent?.trim()) {
       setIsLoading(true)
       try {
-        const response = await fetch(`/api/posts/${postId}/answers`, {
+        const response = await fetch(`/api/posts/${postId}/answers/route`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
