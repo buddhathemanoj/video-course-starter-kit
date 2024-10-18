@@ -372,7 +372,7 @@ export default function LessonForum({ lessonId }: LessonForumProps) {
     }
 
     try {
-      const response = await fetch(`/api/posts/${postId}/vote`, {
+      const response = await fetch(`/api/posts/${postId}/vote/route`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
