@@ -162,10 +162,11 @@ const CourseViewer = ({
         )}
 
         <Heading>{activeLesson.name}</Heading>
-        <p className="text-slate-600 text-lg">{activeLesson.description}</p>
+        <p className="text-slate-600 text-lg mb-2">{activeLesson.description}</p>
+        <hr/>
         <LessonForum
-              lessonId="next-js-ssr-001"
-              initialPosts={initialPosts}
+              lessonId="1"
+             
             />
       </div>
 

@@ -1,11 +1,11 @@
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider             = "mysql"
-  url                  = env("DATABASE_URL")
-  relationMode         = "prisma"
+  provider     = "cockroachdb"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model Account {
@@ -14,15 +14,15 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: NoAction)
 
   @@unique([provider, providerAccountId])
 }
@@ -32,7 +32,7 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: NoAction)
 }
 
 model User {
@@ -46,7 +46,10 @@ model User {
   courses          Course[]
   videos           Video[]
   completedLessons UserLessonProgress[]
+  ForumPost        ForumPost[]
+  votes            Vote[]               // Add this line to reference the votes
 }
+
 
 model VerificationToken {
   identifier String
@@ -57,32 +60,34 @@ model VerificationToken {
 }
 
 model Course {
-  id          Int      @id @default(autoincrement())
+  id          Int      @id @default(sequence())
   name        String
   description String
   slug        String
   lessons     Lesson[]
-  author      User     @relation(fields: [authorId], references: [id])
+  author      User     @relation(fields: [authorId], references: [id], onDelete: NoAction)
   authorId    String
   published   Boolean  @default(false)
 }
 
 model Lesson {
-  id             Int                  @id @default(autoincrement())
+  id             Int                  @id @default(sequence())
   name           String
   description    String
   slug           String
-  course         Course               @relation(fields: [courseId], references: [id])
+  course         Course               @relation(fields: [courseId], references: [id], onDelete: NoAction)
   courseId       Int
   video          Video?
   usersCompleted UserLessonProgress[]
+
+  ForumPost ForumPost[]
 }
 
 model Video {
-  id                Int     @id @default(autoincrement())
-  lesson            Lesson? @relation(fields: [lessonId], references: [id])
+  id                Int     @id @default(sequence())
+  lesson            Lesson? @relation(fields: [lessonId], references: [id], onDelete: NoAction)
   lessonId          Int?    @unique
-  owner             User    @relation(fields: [ownerId], references: [id])
+  owner             User    @relation(fields: [ownerId], references: [id], onDelete: NoAction)
   ownerId           String
   uploadId          String  @unique
   publicPlaybackId  String?
@@ -94,11 +99,53 @@ model Video {
 }
 
 model UserLessonProgress {
-  user        User     @relation(fields: [userId], references: [id])
-  userId      String // relation scalar field (used in the `@relation` attribute above)
-  lesson      Lesson   @relation(fields: [lessonId], references: [id])
-  lessonId    Int // relation scalar field (used in the `@relation` attribute above)
+  user        User   @relation(fields: [userId], references: [id], onDelete: NoAction)
+  userId      String
+  lesson      Lesson @relation(fields: [lessonId], references: [id], onDelete: NoAction)
+  lessonId    Int
   completedAt DateTime @default(now())
 
   @@id([userId, lessonId])
+}
+model ForumPost {
+  id          String       @id @default(cuid())
+  content     String
+  authorId    String
+  lessonId    Int
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  isQuestion  Boolean     @default(true)
+  parentId    String?     // For answers, references parent question
+  
+  // Relations
+  author      User        @relation(fields: [authorId], references: [id])
+  lesson      Lesson      @relation(fields: [lessonId], references: [id])
+  parent      ForumPost?  @relation("PostToAnswers", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  answers     ForumPost[] @relation("PostToAnswers")
+  votes       Vote[]
+  
+  @@index([lessonId])
+  @@index([authorId])
+  @@index([parentId])
+}
+
+model Vote {
+  id        String    @id @default(cuid())
+  postId    String
+  userId    String
+  type      VoteType
+  createdAt DateTime  @default(now())
+  
+  // Relations
+  post      ForumPost @relation(fields: [postId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+  
+  @@unique([postId, userId]) // One vote per user per post
+  @@index([postId])
+  @@index([userId])
+}
+
+enum VoteType {
+  UPVOTE
+  DOWNVOTE
 }
